@@ -3,6 +3,7 @@ import { async } from '@angular/core/testing';
 import { isNullOrUndefined } from 'util';
 import { Subscriber } from 'rxjs';
 import { AnalisisService } from "../../services/analisis.service";
+declare var $: any;
 
 @Component({
   selector: 'app-home',
@@ -18,6 +19,7 @@ export class HomeComponent implements OnInit {
   File2: string = "";
   Nombre1: string = "No se a Cargado Archivo";
   Nombre2: string = "No se a Cargado Archivo";
+  ASTData: string = '<p>No Data</p>';
 
   //Variable para IF
   VerArchivos:Boolean = true;
@@ -25,14 +27,33 @@ export class HomeComponent implements OnInit {
   constructor(public Analize:AnalisisService) { }
 
   ngOnInit(): void {
+    //this.tree();
   }
 
   Comparar() {
     if(this.File1.length>0 && this.File2.length>0){
       this.Analize.Compare(this.File1, this.File2).subscribe(res=>{
         console.log(res);
+        this.ASTData = res['data']['reporteAST'];
       });
     }
+  }
+
+  activateTree(){
+    $(function () {
+      // 6 create an instance when the DOM is ready
+      $('#jstree').jstree();
+      // 7 bind to events triggered on the tree
+      $('#jstree').on("changed.jstree", function (e, data) {
+        console.log(data.selected);
+      });
+      // 8 interact with the tree - either way is OK
+      $('button').on('click', function () {
+        $('#jstree').jstree(true).select_node('child_node_1');
+        $('#jstree').jstree('select_node', 'child_node_1');
+        $.jstree.reference('#jstree').select_node('child_node_1');
+      });
+    });
   }
 
    Subir1() {
@@ -70,6 +91,7 @@ export class HomeComponent implements OnInit {
   Resultados(){
     this.VerArchivos = false;
     this.VerResultados = true;
+    this.activateTree();
   }
   Archivos(){
     this.VerArchivos = true;
