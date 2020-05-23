@@ -19,10 +19,10 @@ export class ReporteErrores {
     }
 
     public getErrorList(): string {
-        let errorListData: string = '';
-
+        let errorListData: string = '<table class="table">';
+        errorListData += '<thead><tr><th scope="col">Id</th><th scope="col">Tipo</th><th scope="col">Descripcion</th><th scope="col">Fila</th><th scope="col">Columna</th></tr></thead><tbody>';
         this.listaErrores.forEach(element => {
-            errorListData += '<tr>';
+            errorListData += '<tr scope="row">';
             errorListData += '<th>' + element.getIdError() + '</th>';
             errorListData += '<th>' + element.getTipo() + '</th>';
             errorListData += '<th>' + element.getDescripcion() + '</th>';
@@ -30,6 +30,7 @@ export class ReporteErrores {
             errorListData += '<th>' + element.getColumna() + '</th>';
             errorListData += '</tr>';
         });
+        errorListData += '</tbody></table>';
         return errorListData;
     }
 };

@@ -20,10 +20,14 @@ export class HomeComponent implements OnInit {
   Nombre1: string = "No se a Cargado Archivo";
   Nombre2: string = "No se a Cargado Archivo";
   ASTData: string = '<p>No Data</p>';
+  ErrorArchivo1: string = '<p>No Data</p>';
+  ErrorArchivo2: string = '<p>No Data</p>';
 
   //Variable para IF
   VerArchivos:Boolean = true;
   VerResultados:Boolean = false;
+  VerErrores:Boolean = false;
+  
   constructor(public Analize:AnalisisService) { }
 
   ngOnInit(): void {
@@ -34,7 +38,19 @@ export class HomeComponent implements OnInit {
     if(this.File1.length>0 && this.File2.length>0){
       this.Analize.Compare(this.File1, this.File2).subscribe(res=>{
         console.log(res);
-        this.ASTData = res['data']['reporteAST'];
+        if(res['data'] != undefined){
+          this.ASTData = res['data']['reporteAST'];
+          this.ErrorArchivo1 = '<p>No Data</p>';
+          this.ErrorArchivo2 = '<p>No Data</p>';
+        }
+        if(res['errors'] != undefined){
+          if(res['errors']['erroresArchivo1'] != undefined){
+            this.ErrorArchivo1 = res['errors']['erroresArchivo1'];
+          }
+          if(res['errors']['erroresArchivo2'] != undefined){
+            this.ErrorArchivo2 = res['errors']['erroresArchivo2'];            
+          }
+        }
       });
     }
   }
@@ -91,10 +107,18 @@ export class HomeComponent implements OnInit {
   Resultados(){
     this.VerArchivos = false;
     this.VerResultados = true;
+    this.VerErrores = false;
     this.activateTree();
   }
   Archivos(){
     this.VerArchivos = true;
+    this.VerResultados = false;
+    this.VerErrores = false;
+  }
+
+  Errores(){
+    this.VerErrores = true;
+    this.VerArchivos = false;
     this.VerResultados = false;
   }
 }
